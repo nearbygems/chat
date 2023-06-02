@@ -1,0 +1,10 @@
+chat:
+  host: "localhost"
+  port: 8081
+  parents: 1
+  children: 2
+  timeout: 1000
+  backlog: 128
+  nodelay: "true"
+  keepAlive: "true"
+  maxFrameLength: 80960
