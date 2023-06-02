@@ -16,6 +16,8 @@ public class ChatProperties {
     private final Integer timeout;
     private final Integer backlog;
     private final Integer maxFrameLength;
+    private final Integer corePoolSize;
+    private final Long    taskTimeout;
     private final Boolean nodelay;
     private final Boolean keepAlive;
 

@@ -24,7 +24,7 @@ public class ChatServer {
         try {
             final var channelFuture = serverBootstrap.bind(properties.getHost(), properties.getPort())
                                                      .sync();
-            log.info("Netty server started on port {}", properties.getPort());
+            log.info("Netty server started on host {} and port {}", properties.getHost(), properties.getPort());
             channel = channelFuture.channel().closeFuture().sync().channel();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

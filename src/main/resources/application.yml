@@ -2,9 +2,11 @@ chat:
   host: "localhost"
   port: 8081
   parents: 1
-  children: 2
+  children: 10
   timeout: 1000
   backlog: 128
+  maxFrameLength: 80960
+  corePoolSize: 4
+  taskTimeout: 5000
   nodelay: "true"
   keepAlive: "true"
-  maxFrameLength: 80960

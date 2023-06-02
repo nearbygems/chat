@@ -32,8 +32,7 @@ class Command(val type: Type,
                     ?.let { word ->
                         Type.values()
                             .firstOrNull { it.command == word }
-                        ?: if (word.isCommand())
-                            ILLEGAL else SEND
+                        ?: if (word.isCommand()) ILLEGAL else SEND
                     }
                 ?: ILLEGAL
 

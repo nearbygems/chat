@@ -1,6 +1,5 @@
 package kz.nearbygems.chat.util
 
-
 fun String?.isCommand() = this?.let { "/[^/].*".toRegex().matches(it) } ?: false
 
 fun String?.firstWord() = this?.split("\\s+".toRegex(), 2)?.getOrNull(0)

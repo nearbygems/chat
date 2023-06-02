@@ -22,8 +22,7 @@ public class ChatServiceImpl implements ChatService {
 
         final var command = Command.Companion.from(ctx, msg);
 
-        commands.select(command)
-                .execute(command);
+        commands.select(command).execute(command);
     }
 
 }
