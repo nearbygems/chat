@@ -1,4 +1,4 @@
-package kz.nearbygems.chat.server
+package kz.nearbygems.chat.server.handlers
 
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -8,7 +8,7 @@ import io.mockk.verify
 import io.netty.channel.embedded.EmbeddedChannel
 import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
-import kz.nearbygems.chat.service.ChatService
+import kz.nearbygems.chat.server.Executor
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 
@@ -16,7 +16,7 @@ import kotlin.test.Test
 class ChatHandlerTest {
 
     @MockK
-    lateinit var service: ChatService
+    lateinit var executor: Executor
 
     @InjectMockKs
     lateinit var handler: ChatHandler
@@ -26,7 +26,7 @@ class ChatHandlerTest {
 
         val message = "message"
 
-        justRun { service.handle(any(), message) }
+        justRun { executor.submit(any(), message) }
 
         //
         val channel = EmbeddedChannel(StringDecoder(), StringEncoder(), handler)
@@ -34,7 +34,7 @@ class ChatHandlerTest {
 
         channel.writeInbound(message)
 
-        verify { service.handle(any(), message) }
+        verify { executor.submit(any(), message) }
     }
 
 }
