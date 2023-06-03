@@ -1,40 +1,39 @@
 package kz.nearbygems.chat.service.impl
 
 import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.ChannelId
+import kz.nearbygems.chat.exceptions.AlreadyAuthException
 import kz.nearbygems.chat.exceptions.IncorrectLoginException
-import kz.nearbygems.chat.model.Credentials
 import kz.nearbygems.chat.model.User
 import kz.nearbygems.chat.repository.UserRepository
+import kz.nearbygems.chat.service.ChannelService
 import kz.nearbygems.chat.service.UserService
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl(private val repository: UserRepository) : UserService {
+class UserServiceImpl(private val repository: UserRepository,
+                      private val channelService: ChannelService) : UserService {
 
-    override fun login(ctx: ChannelHandlerContext, credentials: Credentials): User {
+    override fun login(ctx: ChannelHandlerContext, user: User) {
 
-        if (repository.exists(credentials.username)) {
+        repository.getByUsername(user.name)?.let {
 
-            val user = repository.getByUsername(credentials.username)
+            if (it.password != user.password) {
+                throw IncorrectLoginException()
+            }
 
-            if (user.password == credentials.password) {
+            channelService.getUsernameByChannelId(ctx.channel().id())?.let {
+                throw AlreadyAuthException()
+            }
+            channelService.saveChannel(ctx.channel().id(), user.name)
+            ctx.writeAndFlush("You successfully logged in.\n")
 
-                user.channelIds.add(ctx.channel().id())
-
-                repository.save(user)
-
-                return user
-
-            } else throw IncorrectLoginException()
-
-        } else {
-
-            val user = User(credentials.username, credentials.password, mutableSetOf(ctx.channel().id()), null)
+        } ?: run {
 
             repository.save(user)
+            channelService.saveChannel(ctx.channel().id(), user.name)
+            ctx.writeAndFlush("Welcome, ${user.name}!\n")
+            ctx.writeAndFlush("You successfully registered.\n")
 
-            return user
         }
 
     }
@@ -42,9 +41,5 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
     override fun save(user: User) {
         repository.save(user)
     }
-
-    override fun getUserByChannel(channelId: ChannelId): User? = repository.getByChannelId(channelId)
-
-    override fun getUsersByChatName(chatName: String): List<String> = repository.getUsersByChatName(chatName)
 
 }

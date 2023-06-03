@@ -5,7 +5,7 @@ import kz.nearbygems.chat.provider.CommandProvider
 import org.springframework.stereotype.Component
 
 @Component
-class HelpCommandProvider :CommandProvider {
+class HelpCommandProvider : CommandProvider {
 
     private final val answer = """
         Hi, it's simple text based chat.

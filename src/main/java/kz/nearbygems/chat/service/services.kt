@@ -2,7 +2,6 @@ package kz.nearbygems.chat.service
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelId
-import kz.nearbygems.chat.model.Credentials
 import kz.nearbygems.chat.model.User
 
 interface HandlerContextService {
@@ -13,17 +12,37 @@ interface HandlerContextService {
 
 interface UserService {
 
-    fun login(ctx: ChannelHandlerContext, credentials: Credentials): User
+    fun login(ctx: ChannelHandlerContext, user: User)
 
     fun save(user: User)
 
-    fun getUserByChannel(channelId: ChannelId): User?
+}
 
-    fun getUsersByChatName(chatName: String): List<String>
+interface ChannelService {
+
+    fun getUsernameByChannelId(channelId: ChannelId): String?
+
+    fun getChannelIdsByUsername(username: String): Set<ChannelId>
+
+    fun saveChannel(channelId: ChannelId, username: String)
+
+    fun deleteChannel(channelId: ChannelId)
 
 }
 
 interface ChatService {
+
+    fun getChatNameByUsername(username: String): String?
+
+    fun getUsernamesByChatName(chatName: String): List<String>
+
+    fun saveChatName(username: String, chatName: String)
+
+    fun deleteChatName(username: String)
+
+}
+
+interface ChannelGroupService {
 
     fun sendChatUsers(ctx: ChannelHandlerContext)
 
@@ -34,5 +53,7 @@ interface ChatService {
     fun joinChat(ctx: ChannelHandlerContext, chatName: String)
 
     fun leaveChat(ctx: ChannelHandlerContext)
+
+    fun disconnect(ctx: ChannelHandlerContext)
 
 }

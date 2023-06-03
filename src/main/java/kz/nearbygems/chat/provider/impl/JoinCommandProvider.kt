@@ -3,11 +3,11 @@ package kz.nearbygems.chat.provider.impl
 import kz.nearbygems.chat.exceptions.IncorrectJoinMessage
 import kz.nearbygems.chat.model.Command
 import kz.nearbygems.chat.provider.CommandProvider
-import kz.nearbygems.chat.service.ChatService
+import kz.nearbygems.chat.service.ChannelGroupService
 import org.springframework.stereotype.Component
 
 @Component
-class JoinCommandProvider(private val service: ChatService) : CommandProvider {
+class JoinCommandProvider(private val service: ChannelGroupService) : CommandProvider {
 
     override fun type(): Command.Type = Command.Type.JOIN
 
@@ -21,7 +21,7 @@ class JoinCommandProvider(private val service: ChatService) : CommandProvider {
 
     private fun validate(command: Command) {
         if (command.message?.contains("\\s+".toRegex()) != false) {
-            command.ctx.fireExceptionCaught(IncorrectJoinMessage())
+            throw IncorrectJoinMessage()
         }
     }
 

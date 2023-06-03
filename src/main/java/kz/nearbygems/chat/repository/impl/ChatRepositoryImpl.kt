@@ -1,6 +1,5 @@
 package kz.nearbygems.chat.repository.impl
 
-import kz.nearbygems.chat.model.Chat
 import kz.nearbygems.chat.repository.ChatRepository
 import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
@@ -8,14 +7,21 @@ import java.util.concurrent.ConcurrentHashMap
 @Repository
 class ChatRepositoryImpl : ChatRepository {
 
-    private val chats = ConcurrentHashMap<String, Chat>()
+    private val chats = ConcurrentHashMap<String, String>()
 
-    override fun findAll(): List<Chat> = chats.elements().toList()
+    override fun getChatNameByUsername(username: String): String? = chats[username]
 
-    override fun findByName(chatName: String): Chat? = chats[chatName]
+    override fun getUsernamesByChatName(chatName: String): List<String> =
+            chats.filterValues { it == chatName }.keys.sorted()
 
-    override fun save(chat: Chat) {
-        chats[chat.name] = chat
+    override fun saveChatName(username: String, chatName: String) {
+        chats[username] = chatName
+    }
+
+    override fun deleteChatName(username: String) {
+        if (chats.containsKey(username)) {
+            chats.remove(username)
+        }
     }
 
 }

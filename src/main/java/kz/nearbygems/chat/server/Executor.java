@@ -29,7 +29,7 @@ public class Executor {
         final var future = executorService.submit(() -> {
             try {
                 service.handle(ctx, msg);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log.error("Couldn't finish task", e);
                 ctx.fireExceptionCaught(e);
             }
