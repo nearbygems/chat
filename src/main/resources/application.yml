@@ -8,5 +8,6 @@ chat:
   maxFrameLength: 80960
   corePoolSize: 4
   taskTimeout: 5000
+  maxActiveClients: 10
   nodelay: "true"
   keepAlive: "true"

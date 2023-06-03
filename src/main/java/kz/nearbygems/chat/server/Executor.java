@@ -2,7 +2,7 @@ package kz.nearbygems.chat.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import kz.nearbygems.chat.config.ChatProperties;
-import kz.nearbygems.chat.service.ChatService;
+import kz.nearbygems.chat.service.HandlerContextService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class Executor {
 
-    private final ChatService              service;
+    private final HandlerContextService    service;
     private final ChatProperties           properties;
     private final ScheduledExecutorService executorService;
 
-    public Executor(ChatService service, ChatProperties properties) {
+    public Executor(HandlerContextService service, ChatProperties properties) {
         this.service         = service;
         this.properties      = properties;
         this.executorService = Executors.newScheduledThreadPool(properties.getCorePoolSize(), Executors.defaultThreadFactory());
@@ -31,6 +31,7 @@ public class Executor {
                 service.handle(ctx, msg);
             } catch (Exception e) {
                 log.error("Couldn't finish task", e);
+                ctx.fireExceptionCaught(e);
             }
         });
         executorService.schedule(() -> future.cancel(true), properties.getTaskTimeout(), TimeUnit.MILLISECONDS);

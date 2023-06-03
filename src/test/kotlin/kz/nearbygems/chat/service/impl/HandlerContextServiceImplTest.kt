@@ -12,13 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 
 @ExtendWith(MockKExtension::class)
-class ChatServiceImplTest {
+class HandlerContextServiceImplTest {
 
     @MockK
     lateinit var commands: CommandProviderSelector
 
     @InjectMockKs
-    lateinit var service: ChatServiceImpl
+    lateinit var service: HandlerContextServiceImpl
 
     @Test
     fun `handle empty message`() {

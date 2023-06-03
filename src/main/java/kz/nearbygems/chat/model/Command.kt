@@ -16,6 +16,7 @@ class Command(val type: Type,
 
     enum class Type(val command: String) {
 
+        HELP("/help"),
         LOGIN("/login"),
         JOIN("/join"),
         LEAVE("/leave"),

@@ -17,7 +17,7 @@ public class ExceptionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error("Exception handler caught an exception", cause);
-        ctx.writeAndFlush(String.format("Couldn't send your message because of %s \n", cause.getMessage()));
+        ctx.writeAndFlush(cause.getMessage());
     }
 
 }
