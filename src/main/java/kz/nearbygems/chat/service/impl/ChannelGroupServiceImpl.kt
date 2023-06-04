@@ -124,7 +124,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             channelService.deleteChannel(ctx.channel().id())
 
-        } ?: throw UserAuthException()
+        }
 
     }
 }
