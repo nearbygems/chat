@@ -12,7 +12,7 @@ server:
 
 executor:
   corePoolSize: 4
-  delay: 2000
+  delay: 500
 
 chat:
   clients: 3

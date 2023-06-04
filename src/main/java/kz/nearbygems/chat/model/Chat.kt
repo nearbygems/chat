@@ -6,8 +6,9 @@ import io.netty.channel.group.DefaultChannelGroup
 import io.netty.util.concurrent.ImmediateEventExecutor
 import kz.nearbygems.chat.exceptions.ClientLimitExceededException
 
-class Chat(private val messages: MutableList<Message>) {
+class Chat {
 
+    private val messages = mutableListOf<Message>()
     private val group = DefaultChannelGroup(ImmediateEventExecutor.INSTANCE)
 
     fun send(message: Message) {

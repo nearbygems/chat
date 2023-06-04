@@ -3,6 +3,7 @@ package kz.nearbygems.chat.service.impl
 import io.netty.channel.ChannelHandlerContext
 import kz.nearbygems.chat.config.props.ChatProperties
 import kz.nearbygems.chat.exceptions.EmptyChatListException
+import kz.nearbygems.chat.exceptions.UserAlreadyInChatException
 import kz.nearbygems.chat.exceptions.UserAuthException
 import kz.nearbygems.chat.model.Chat
 import kz.nearbygems.chat.model.Message
@@ -60,7 +61,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.send(Message(username, message))
+                repository.getByName(chatName)?.send(Message(username, message))
 
             } ?: throw EmptyChatListException()
 
@@ -72,7 +73,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
         channelService.getUsernameByChannelId(ctx.channel().id())?.let { username ->
 
-            repository.findByName(chatName)?.let { chat ->
+            repository.getByName(chatName)?.let { chat ->
 
                 chat.add(ctx, properties.clients)
                 ctx.writeAndFlush("You successfully joined to $chatName.\n")
@@ -80,11 +81,19 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             } ?: run {
 
-                val group = Chat(mutableListOf())
-                group.add(ctx, properties.clients)
+                chatService.getChatNameByUsername(username)?.let {
 
-                repository.save(chatName, group)
-                ctx.writeAndFlush("Created new chat with name $chatName.\n")
+                    throw UserAlreadyInChatException()
+
+                } ?: run {
+
+                    val group = Chat()
+                    group.add(ctx, properties.clients)
+
+                    repository.save(chatName, group)
+                    ctx.writeAndFlush("Created new chat with name $chatName.\n")
+
+                }
 
             }
 
@@ -100,7 +109,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.del(channelService.getChannelIdsByUsername(username))
+                repository.getByName(chatName)?.del(channelService.getChannelIdsByUsername(username))
 
                 chatService.deleteChatName(username)
 
@@ -118,7 +127,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.del(setOf(ctx.channel().id()))
+                repository.getByName(chatName)?.del(setOf(ctx.channel().id()))
 
             }
 

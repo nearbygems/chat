@@ -38,7 +38,7 @@ interface ChatRepository {
 
 interface ChannelGroupRepository {
 
-    fun findByName(chatName: String): Chat?
+    fun getByName(chatName: String): Chat?
 
     fun save(chatName: String, chat: Chat)
 
