@@ -13,7 +13,7 @@ class ChannelRepositoryImpl : ChannelRepository {
     override fun getUsernameByChannelId(channelId: ChannelId): String? = channels[channelId]
 
     override fun getChannelIdsByUsername(username: String): Set<ChannelId> =
-            channels.filterValues { it == username }.keys
+        channels.filterValues { it == username }.keys
 
     override fun saveChannel(channelId: ChannelId, username: String) {
         channels[channelId] = username

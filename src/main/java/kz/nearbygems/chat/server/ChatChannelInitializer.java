@@ -7,7 +7,7 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LoggingHandler;
-import kz.nearbygems.chat.config.ChatProperties;
+import kz.nearbygems.chat.config.props.FrameProperties;
 import kz.nearbygems.chat.server.handlers.ChatHandler;
 import kz.nearbygems.chat.server.handlers.ExceptionHandler;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChatChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final ChatProperties   properties;
+    private final FrameProperties  properties;
     private final LoggingHandler   loggingHandler;
     private final StringDecoder    stringDecoder;
     private final StringEncoder    stringEncoder;
@@ -28,7 +28,8 @@ public class ChatChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(@NotNull SocketChannel ch) {
         ch.pipeline()
-          .addLast("frameDecoder", new DelimiterBasedFrameDecoder(properties.getMaxFrameLength(), Delimiters.lineDelimiter()))
+          .addLast("frameDecoder", new DelimiterBasedFrameDecoder(properties.length(),
+                                                                  Delimiters.lineDelimiter()))
           .addLast("loggingHandler", loggingHandler)
           .addLast("stringDecoder", stringDecoder)
           .addLast("stringEncoder", stringEncoder)

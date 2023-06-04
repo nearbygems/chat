@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 class HelpCommandProvider : CommandProvider {
 
     private final val answer = """
+        
         Hi, it's simple text based chat.
         Chat can handle next commands:
         /login <name> <password> - login with username and password;

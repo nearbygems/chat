@@ -1,6 +1,6 @@
 package kz.nearbygems.chat.provider.impl
 
-import kz.nearbygems.chat.exceptions.IncorrectJoinMessage
+import kz.nearbygems.chat.exceptions.JoinValidationException
 import kz.nearbygems.chat.model.Command
 import kz.nearbygems.chat.provider.CommandProvider
 import kz.nearbygems.chat.service.ChannelGroupService
@@ -21,7 +21,7 @@ class JoinCommandProvider(private val service: ChannelGroupService) : CommandPro
 
     private fun validate(command: Command) {
         if (command.message?.contains("\\s+".toRegex()) != false) {
-            throw IncorrectJoinMessage()
+            throw JoinValidationException()
         }
     }
 

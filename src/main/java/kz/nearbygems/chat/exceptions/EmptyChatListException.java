@@ -1,8 +1,8 @@
 package kz.nearbygems.chat.exceptions;
 
-public class NoChatException extends RuntimeException {
+public class EmptyChatListException extends ChatException {
 
-    public NoChatException() {
+    public EmptyChatListException() {
         super("You haven't joined any chat yet.\n");
     }
 

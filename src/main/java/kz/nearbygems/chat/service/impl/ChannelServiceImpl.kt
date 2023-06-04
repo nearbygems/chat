@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service
 class ChannelServiceImpl(private val repository: ChannelRepository) : ChannelService {
 
     override fun getUsernameByChannelId(channelId: ChannelId): String? =
-            repository.getUsernameByChannelId(channelId)
+        repository.getUsernameByChannelId(channelId)
 
     override fun getChannelIdsByUsername(username: String): Set<ChannelId> =
-            repository.getChannelIdsByUsername(username)
+        repository.getChannelIdsByUsername(username)
 
     override fun saveChannel(channelId: ChannelId, username: String) {
         repository.saveChannel(channelId, username)

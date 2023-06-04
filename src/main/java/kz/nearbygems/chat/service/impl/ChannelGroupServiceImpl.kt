@@ -1,11 +1,11 @@
 package kz.nearbygems.chat.service.impl
 
 import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.group.DefaultChannelGroup
-import io.netty.util.concurrent.ImmediateEventExecutor
-import kz.nearbygems.chat.exceptions.AuthException
-import kz.nearbygems.chat.exceptions.ClientLimitExceededException
-import kz.nearbygems.chat.exceptions.NoChatException
+import kz.nearbygems.chat.config.props.ChatProperties
+import kz.nearbygems.chat.exceptions.EmptyChatListException
+import kz.nearbygems.chat.exceptions.UserAuthException
+import kz.nearbygems.chat.model.Chat
+import kz.nearbygems.chat.model.Message
 import kz.nearbygems.chat.repository.ChannelGroupRepository
 import kz.nearbygems.chat.service.ChannelGroupService
 import kz.nearbygems.chat.service.ChannelService
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service
 @Service
 class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
                               private val channelService: ChannelService,
-                              private val chatService: ChatService) : ChannelGroupService {
+                              private val chatService: ChatService,
+                              private val properties: ChatProperties) : ChannelGroupService {
 
     override fun sendChatUsers(ctx: ChannelHandlerContext) {
 
@@ -29,9 +30,9 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
                 ctx.writeAndFlush(message)
 
-            } ?: throw NoChatException()
+            } ?: throw EmptyChatListException()
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 
@@ -49,7 +50,7 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             ctx.writeAndFlush(message)
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 
@@ -59,11 +60,11 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.writeAndFlush("[$username]: $message\n")
+                repository.findByName(chatName)?.send(Message(username, message))
 
-            } ?: throw NoChatException()
+            } ?: throw EmptyChatListException()
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 
@@ -71,29 +72,25 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
         channelService.getUsernameByChannelId(ctx.channel().id())?.let { username ->
 
-            repository.findByName(chatName)?.let { group ->
+            repository.findByName(chatName)?.let { chat ->
 
-                if (group.size > 3) {
-                    throw ClientLimitExceededException()
-                }
-
-                group.add(ctx.channel())
-
-                ctx.writeAndFlush("Group size is ${group.size}.\n")
+                chat.add(ctx, properties.clients)
+                ctx.writeAndFlush("You successfully joined to $chatName.\n")
+                ctx.writeAndFlush(chat.lastMessages(properties.clients))
 
             } ?: run {
 
-                val group = DefaultChannelGroup(ImmediateEventExecutor.INSTANCE)
-                group.add(ctx.channel())
+                val group = Chat(mutableListOf())
+                group.add(ctx, properties.clients)
+
                 repository.save(chatName, group)
                 ctx.writeAndFlush("Created new chat with name $chatName.\n")
 
             }
 
             chatService.saveChatName(username, chatName)
-            ctx.writeAndFlush("You successfully joined to chat with name $chatName.\n")
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 
@@ -103,17 +100,15 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.let { group ->
-                    group.removeIf { channelService.getChannelIdsByUsername(username).contains(it.id()) }
-                }
+                repository.findByName(chatName)?.del(channelService.getChannelIdsByUsername(username))
 
                 chatService.deleteChatName(username)
 
-                ctx.writeAndFlush("You successfully leaved from chat with name $chatName.\n")
+                ctx.writeAndFlush("You successfully leaved from $chatName.\n")
 
-            } ?: throw NoChatException()
+            } ?: throw EmptyChatListException()
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 
@@ -123,15 +118,13 @@ class ChannelGroupServiceImpl(private val repository: ChannelGroupRepository,
 
             chatService.getChatNameByUsername(username)?.let { chatName ->
 
-                repository.findByName(chatName)?.let { group ->
-                    group.removeIf { ctx.channel().id() == it.id() }
-                }
+                repository.findByName(chatName)?.del(setOf(ctx.channel().id()))
 
             }
 
             channelService.deleteChannel(ctx.channel().id())
 
-        } ?: throw AuthException()
+        } ?: throw UserAuthException()
 
     }
 }

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service
 class ChatServiceImpl(private val repository: ChatRepository) : ChatService {
 
     override fun getChatNameByUsername(username: String): String? =
-            repository.getChatNameByUsername(username)
+        repository.getChatNameByUsername(username)
 
     override fun getUsernamesByChatName(chatName: String): List<String> =
-            repository.getUsernamesByChatName(chatName)
+        repository.getUsernamesByChatName(chatName)
 
     override fun saveChatName(username: String, chatName: String) {
         repository.saveChatName(username, chatName)

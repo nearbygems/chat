@@ -9,6 +9,7 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.ResourceLeakDetector;
+import kz.nearbygems.chat.config.props.BootstrapProperties;
 import kz.nearbygems.chat.server.ChatChannelInitializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class ChatConfiguration {
 
-    private final ChatProperties properties;
+    private final BootstrapProperties properties;
 
     @Bean
     public ServerBootstrap serverBootstrap(NioEventLoopGroup parentGroup,
@@ -28,22 +29,22 @@ public class ChatConfiguration {
         final var serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(parentGroup, childGroup)
                        .channel(NioServerSocketChannel.class)
-                       .option(ChannelOption.SO_BACKLOG, properties.getBacklog())
-                       .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getTimeout())
-                       .childOption(ChannelOption.TCP_NODELAY, properties.getNodelay())
-                       .childOption(ChannelOption.SO_KEEPALIVE, properties.getKeepAlive())
+                       .option(ChannelOption.SO_BACKLOG, properties.backlog())
+                       .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.timeout())
+                       .childOption(ChannelOption.TCP_NODELAY, properties.nodelay())
+                       .childOption(ChannelOption.SO_KEEPALIVE, properties.keepAlive())
                        .childHandler(initializer);
         return serverBootstrap;
     }
 
     @Bean(destroyMethod = "shutdownGracefully")
     public NioEventLoopGroup parentGroup() {
-        return new NioEventLoopGroup(properties.getParents());
+        return new NioEventLoopGroup(properties.parents());
     }
 
     @Bean(destroyMethod = "shutdownGracefully")
     public NioEventLoopGroup childGroup() {
-        return new NioEventLoopGroup(properties.getChildren());
+        return new NioEventLoopGroup(properties.children());
     }
 
     @Bean

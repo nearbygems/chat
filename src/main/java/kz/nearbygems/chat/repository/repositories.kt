@@ -1,7 +1,7 @@
 package kz.nearbygems.chat.repository
 
 import io.netty.channel.ChannelId
-import io.netty.channel.group.ChannelGroup
+import kz.nearbygems.chat.model.Chat
 import kz.nearbygems.chat.model.User
 
 interface UserRepository {
@@ -38,9 +38,9 @@ interface ChatRepository {
 
 interface ChannelGroupRepository {
 
-    fun findByName(chatName: String): ChannelGroup?
+    fun findByName(chatName: String): Chat?
 
-    fun save(chatName: String, chat: ChannelGroup)
+    fun save(chatName: String, chat: Chat)
 
     fun getChannelGroupNames(): List<String>
 

@@ -28,10 +28,10 @@ class LoginCommandProvider(private val userService: UserService,
         userService.login(command.ctx, user)
 
         chatService.getChatNameByUsername(user.name)
-                ?.let {
-                    command.ctx.writeAndFlush("Joining previous chat...\n")
-                    channelGroupService.joinChat(command.ctx, it)
-                }
+            ?.let {
+                command.ctx.writeAndFlush("Joining previous chat...\n")
+                channelGroupService.joinChat(command.ctx, it)
+            }
 
     }
 

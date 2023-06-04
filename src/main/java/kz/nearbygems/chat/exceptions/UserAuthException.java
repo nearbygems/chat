@@ -1,8 +1,8 @@
 package kz.nearbygems.chat.exceptions;
 
-public class AuthException extends RuntimeException {
+public class UserAuthException extends ChatException {
 
-    public AuthException() {
+    public UserAuthException() {
         super("You haven't logged in yet.\n");
     }
 

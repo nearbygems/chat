@@ -1,8 +1,8 @@
 package kz.nearbygems.chat.exceptions;
 
-public class IncorrectJoinMessage extends RuntimeException {
+public class JoinValidationException extends ChatException {
 
-    public IncorrectJoinMessage() {
+    public JoinValidationException() {
         super("Please, write chat name without spaces.\n");
     }
 

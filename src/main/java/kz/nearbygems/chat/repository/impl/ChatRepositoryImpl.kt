@@ -12,7 +12,7 @@ class ChatRepositoryImpl : ChatRepository {
     override fun getChatNameByUsername(username: String): String? = chats[username]
 
     override fun getUsernamesByChatName(chatName: String): List<String> =
-            chats.filterValues { it == chatName }.keys.sorted()
+        chats.filterValues { it == chatName }.keys.sorted()
 
     override fun saveChatName(username: String, chatName: String) {
         chats[username] = chatName

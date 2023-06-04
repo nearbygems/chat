@@ -2,7 +2,7 @@ package kz.nearbygems.chat.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import kz.nearbygems.chat.config.ChatProperties;
+import kz.nearbygems.chat.config.props.ServerProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,16 +15,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatServer {
 
-    private final ServerBootstrap serverBootstrap;
-    private final ChatProperties  properties;
+    private final ServerBootstrap  serverBootstrap;
+    private final ServerProperties properties;
 
     private Channel channel;
 
     public void start() {
         try {
-            final var channelFuture = serverBootstrap.bind(properties.getHost(), properties.getPort())
+            final var channelFuture = serverBootstrap.bind(properties.host(), properties.port())
                                                      .sync();
-            log.info("Netty server started on host {} and port {}", properties.getHost(), properties.getPort());
+            log.info("Netty server started on host {} and port {}", properties.host(), properties.port());
             channel = channelFuture.channel().closeFuture().sync().channel();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

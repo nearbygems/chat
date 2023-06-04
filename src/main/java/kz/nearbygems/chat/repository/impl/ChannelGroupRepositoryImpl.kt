@@ -1,6 +1,6 @@
 package kz.nearbygems.chat.repository.impl
 
-import io.netty.channel.group.ChannelGroup
+import kz.nearbygems.chat.model.Chat
 import kz.nearbygems.chat.repository.ChannelGroupRepository
 import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap
 @Repository
 class ChannelGroupRepositoryImpl : ChannelGroupRepository {
 
-    private val chats = ConcurrentHashMap<String, ChannelGroup>()
+    private val chats = ConcurrentHashMap<String, Chat>()
 
-    override fun findByName(chatName: String): ChannelGroup? = chats[chatName]
+    override fun findByName(chatName: String): Chat? = chats[chatName]
 
-    override fun save(chatName: String, chat: ChannelGroup) {
+    override fun save(chatName: String, chat: Chat) {
         chats[chatName] = chat
     }
 

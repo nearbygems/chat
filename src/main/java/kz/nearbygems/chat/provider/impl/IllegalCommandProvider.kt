@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 class IllegalCommandProvider : CommandProvider {
 
     private final val answer = """
+        
         Chat does not support this command.
         Please, use "/help" to see existing commands.
         
