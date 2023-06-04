@@ -9,8 +9,6 @@ Simple text based chat based on Netty’s framework 4 version
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Testing](#testing)
-- [Contact](#contact)
 
 ## Project Overview
 
@@ -43,8 +41,32 @@ Step-by-step instructions on how to install and set up your project. Include any
 
 ## Usage
 
+
+
 ## Configuration
 
-## Testing
+The application is configured through the application.yml file.
 
-## Contact
+   ```yaml
+   bootstrap:
+      parents: 1 # number of threads for parent EventLoopGroup
+      children: 10 # number of threads for child EventLoopGroup
+      timeout: 1000 # timeout for connection in millis
+      backlog: 128 # maximum number of waiting connections
+      nodelay: "true" # send data immediately
+      keepAlive: "true" # check if connection is active
+   
+   server:
+      host: "localhost"
+      port: 8081
+
+   executor:
+      corePoolSize: 4 # executor core pool size
+      delay: 500 # max time for task
+
+   chat:
+      clients: 3 # max clients in chat
+      messages: 10 # number of last messages
+
+   frame:
+      length: 80960

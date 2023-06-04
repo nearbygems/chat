@@ -29,7 +29,6 @@ public class Executor {
     }
 
     public void submit(ChannelHandlerContext ctx, String msg) {
-
         final var channelId = ctx.channel().id();
 
         if (previousCommandsByChannel.containsKey(channelId)) {
