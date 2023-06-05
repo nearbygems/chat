@@ -9,6 +9,7 @@ Simple text based chat based on Netty’s framework 4 version
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [Explanation](#explanation)
 
 ## Project Overview
 
@@ -140,7 +141,7 @@ hi, everybody!
 [11:40][username]: hi, everybody!
 [11:41][another_username]: hi, username!
 ```
-When reconnecting, you will be connected to the previous chat and will see the most recent messages in that chat.
+When reconnecting or connecting from other devices, you will be connected to the previous chat and will see the most recent messages in that chat.
 ```
 /login username password
 You successfully logged in.
@@ -195,3 +196,14 @@ The application is configured through the application.yml file.
 
    frame:
       length: 80960
+   ```
+
+## Explanation
+
+For the convenience and speed of development, Spring Boot was used. 
+Since the event loop in Netty is single-threaded, a ScheduledExecutorService was utilized to distribute messages from users and interrupt them in case of long execution.
+A simple SimpleChannelInboundHandler was chosen as the message handler since the chat only deals with text messages.
+The pipeline includes components such as DelimiterBasedFrameDecoder, LoggingHandler, StringDecoder, StringEncoder, ChatHandler, and ExceptionHandler.
+Due to time constraints, the logic had to be implemented without test coverage, and a custom in-memory storage implementation was used.
+As an improvement, handling formats other than text can be added, and the database or cache could be containerized using Docker. It is necessary to incorporate the functionality of automatic disconnection during idle time.
+Furthermore, a more in-depth study of the Netty framework is recommended for proper resource allocation and more robust authorization mechanisms.
