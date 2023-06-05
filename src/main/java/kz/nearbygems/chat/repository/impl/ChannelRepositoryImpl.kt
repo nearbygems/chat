@@ -11,7 +11,7 @@ class ChannelRepositoryImpl(private val database: Database) : ChannelRepository 
     override fun getUsernameByChannelId(channelId: ChannelId): String? = database.channels[channelId]
 
     override fun getChannelIdsByUsername(username: String): Set<ChannelId> =
-            database.channels.filterValues { it == username }.keys
+        database.channels.filterValues { it == username }.keys
 
     override fun saveChannel(channelId: ChannelId, username: String) {
         database.channels[channelId] = username

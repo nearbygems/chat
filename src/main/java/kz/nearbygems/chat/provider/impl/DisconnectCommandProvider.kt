@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 class DisconnectCommandProvider(private val service: ChannelGroupService) : CommandProvider {
 
     private final val answer = """
-        
         Closing your connection.
         Bye-Bye!
         
